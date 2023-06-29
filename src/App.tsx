@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
@@ -6,28 +6,33 @@ import "./App.css";
 function App() {
   const [count, setCount] = useState(0);
 
-  useEffect(() => {
-    const mongoose = require("mongoose");
+  const { MongoClient, ServerApiVersion } = require("mongodb");
+  const credentials = "<path_to_certificate>";
 
-    // Set up MongoDB connection
-    const uri =
-      "mongodb+srv://cluster0.h9pnzaf.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority";
+  const client = new MongoClient(
+    "mongodb+srv://cluster0.h9pnzaf.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority",
+    {
+      sslKey: credentials,
+      sslCert: credentials,
+      serverApi: ServerApiVersion.v1,
+    }
+  );
 
-    mongoose.connect(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+  async function run() {
+    try {
+      await client.connect();
+      const database = client.db("testDB");
+      const collection = database.collection("testCol");
+      const docCount = await collection.countDocuments({});
+      console.log(docCount);
+      // perform actions using client
+    } finally {
+      // Ensures that the client will close when you finish/error
+      await client.close();
+    }
+  }
 
-    const db = mongoose.connection;
-
-    db.once("open", () => {
-      console.log("Connected to MongoDB database");
-    });
-
-    db.on("error", (err: Error) => {
-      console.error("MongoDB connection error:", err);
-    });
-  }, []);
+  run().catch(console.dir);
 
   return (
     <>
