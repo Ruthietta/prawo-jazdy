@@ -1,38 +1,41 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 
 function App() {
   const [count, setCount] = useState(0);
-  const mongoose = require("mongoose");
 
-  // Set up MongoDB connection
-  const uri =
-    "mongodb+srv://cluster0.h9pnzaf.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority";
+  useEffect(() => {
+    const mongoose = require("mongoose");
 
-  mongoose.connect(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+    // Set up MongoDB connection
+    const uri =
+      "mongodb+srv://cluster0.h9pnzaf.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority";
 
-  const db = mongoose.connection;
+    mongoose.connect(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
 
-  db.once("open", () => {
-    console.log("Connected to MongoDB database");
-  });
+    const db = mongoose.connection;
 
-  db.on("error", (err: Error) => {
-    console.error("MongoDB connection error:", err);
-  });
+    db.once("open", () => {
+      console.log("Connected to MongoDB database");
+    });
+
+    db.on("error", (err: Error) => {
+      console.error("MongoDB connection error:", err);
+    });
+  }, []);
 
   return (
     <>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
+        <a href="https://vitejs.dev" target="_blank" rel="noopener noreferrer">
           <img src={viteLogo} className="logo" alt="Vite logo" />
         </a>
-        <a href="https://react.dev" target="_blank">
+        <a href="https://react.dev" target="_blank" rel="noopener noreferrer">
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
